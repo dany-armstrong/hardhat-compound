@@ -7,7 +7,7 @@ import {
   CErc20Immutable,
   CEther,
   Comptroller,
-  SimplePriceOracle,
+  ChainlinkPriceOracle,
   WhitePaperInterestRateModel,
 } from '../typechain';
 
@@ -15,7 +15,7 @@ import { CTokenType, InterestRateModelType } from './enums';
 
 export interface CompoundV2 {
   readonly comptroller: Comptroller;
-  readonly priceOracle: SimplePriceOracle;
+  readonly priceOracle: ChainlinkPriceOracle;
   readonly interestRateModels: InterestRateModels;
   readonly cTokens: CTokens;
 }
@@ -106,6 +106,5 @@ export interface CTokenConfig {
 export interface CTokenDeployArg {
   cToken: string;
   underlying?: string;
-  underlyingPrice?: BigNumberish;
   collateralFactor?: BigNumberish;
 }

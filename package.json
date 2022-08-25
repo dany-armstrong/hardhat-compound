@@ -62,7 +62,8 @@
     "@typechain/ethers-v5": "^7.0.1",
     "@typechain/hardhat": "^2.2.0",
     "dotenv": "^10.0.0",
-    "ethers": "^5.4.1"
+    "ethers": "^5.4.1",
+    "@chainlink/contracts": "0.2.1"
   },
   "peerDependencies": {
     "hardhat": "^2.6.0"

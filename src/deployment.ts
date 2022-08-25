@@ -14,9 +14,8 @@ import {
   Comptroller,
   Comptroller__factory,
   JumpRateModelV2__factory,
-  LegacyJumpRateModelV2__factory,
-  SimplePriceOracle,
-  SimplePriceOracle__factory,
+  ChainlinkPriceOracle,
+  ChainlinkPriceOracle__factory,
   WhitePaperInterestRateModel,
   WhitePaperInterestRateModel__factory,
 } from '../typechain';
@@ -35,7 +34,6 @@ import {
   InterestRateModelConfig,
   InterestRateModels,
   JumpRateModelV2Args,
-  LegacyJumpRateModelV2Args,
   WhitePaperInterestRateModelArgs,
 } from './interfaces';
 
@@ -60,7 +58,6 @@ export async function deployCompoundV2(
   const cTokenLikes = await deployCTokens(
     underlying,
     interestRateModels,
-    priceOracle,
     comptroller,
     deployer,
     overrides
@@ -86,7 +83,6 @@ export async function deployCompoundV2(
 async function deployCTokens(
   config: CTokenDeployArg[],
   irm: InterestRateModels,
-  priceOracle: SimplePriceOracle,
   comptroller: Comptroller,
   deployer: SignerWithAddress,
   overrides?: Overrides
@@ -108,12 +104,6 @@ async function deployCTokens(
         : await deployCToken(cTokenArgs, deployer, overrides);
 
     await comptroller._supportMarket(cToken.address, overrides);
-
-    if (cTokenConf.type === CTokenType.CEther) {
-      await priceOracle.setDirectPrice(cToken.address, u.underlyingPrice || 0, overrides);
-    } else {
-      await priceOracle.setUnderlyingPrice(cToken.address, u.underlyingPrice || 0, overrides);
-    }
 
     if (u.collateralFactor) {
       await comptroller._setCollateralFactor(cToken.address, u.collateralFactor, overrides);
@@ -169,21 +159,6 @@ export async function deployJumpRateModelV2(
   );
 }
 
-export async function deployLegacyJumpRateModelV2(
-  args: LegacyJumpRateModelV2Args,
-  deployer: SignerWithAddress,
-  overrides?: Overrides
-): Promise<BaseJumpRateModelV2> {
-  return new LegacyJumpRateModelV2__factory(deployer).deploy(
-    args.baseRatePerYear,
-    args.multiplierPerYear,
-    args.jumpMultiplierPerYear,
-    args.kink,
-    args.owner,
-    overrides
-  );
-}
-
 async function deployInterestRateModels(
   items: InterestRateModelConfig[],
   deployer: SignerWithAddress,
@@ -201,12 +176,6 @@ async function deployInterestRateModels(
         deployer,
         overrides
       );
-    } else if (item.type === InterestRateModelType.LegacyJumpRateModelV2) {
-      model = await deployLegacyJumpRateModelV2(
-        item.args as LegacyJumpRateModelV2Args,
-        deployer,
-        overrides
-      );
     } else {
       model = await deployJumpRateModelV2(item.args as JumpRateModelV2Args, deployer, overrides);
     }
@@ -218,8 +187,8 @@ async function deployInterestRateModels(
 export async function deployPriceOracle(
   deployer: SignerWithAddress,
   overrides?: Overrides
-): Promise<SimplePriceOracle> {
-  return new SimplePriceOracle__factory(deployer).deploy(overrides);
+): Promise<ChainlinkPriceOracle> {
+  return new ChainlinkPriceOracle__factory(deployer).deploy(overrides);
 }
 
 export async function deployCEth(
