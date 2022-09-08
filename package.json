@@ -1,9 +1,9 @@
 {
-  "name": "@thenextblock/hardhat-compound",
-  "version": "0.0.14",
+  "name": "@dany-armstrong/hardhat-compound",
+  "version": "1.0.3",
   "description": "Compound deployment plugin",
-  "repository": "git@github.com:thenextblock/hardhat-compound.git",
-  "author": "thenextblock",
+  "repository": "git@github.com:dany-armstrong/hardhat-compound.git",
+  "author": "dany-armstrong",
   "license": "MIT",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

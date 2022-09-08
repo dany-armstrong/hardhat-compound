@@ -46,14 +46,15 @@ export async function deployCompoundV2(
   console.log('#1 Comptroller Deployed at: ', comptroller.address);
 
   const priceOracle = await deployPriceOracle(deployer, overrides);
-  console.log('#2 PriceOracle Deployed at: ', comptroller.address);
+  console.log('#2 PriceOracle Deployed at: ', priceOracle.address);
 
-  await comptroller._setPriceOracle(priceOracle.address);
-  console.log('#3 comptroller._setPriceOracle Done : ', priceOracle.address);
+  const tx = await comptroller._setPriceOracle(priceOracle.address);
+  await tx.wait();
+  console.log('#3 comptroller._setPriceOracle Done');
 
   const interestRateModelArgs = Object.values(INTEREST_RATE_MODEL);
   const interestRateModels = await deployInterestRateModels(interestRateModelArgs, deployer);
-  console.log('#4 interestRateModels Deployed at: ', priceOracle.address);
+  console.log('#4 interestRateModels Deployed');
 
   const cTokenLikes = await deployCTokens(
     underlying,
@@ -65,7 +66,7 @@ export async function deployCompoundV2(
   );
 
   cTokenLikes.map((_ctoken, index) => {
-    console.log(`#5-${index + 1} CTokens Deployed at: ', ${_ctoken.address}`);
+    console.log(`#5-${index + 1} CTokens Deployed at: ${_ctoken.address}`);
   });
 
   const cTokens = new CTokens();
@@ -105,16 +106,26 @@ async function deployCTokens(
         ? await deployCEth(cTokenArgs, deployer, overrides)
         : await deployCToken(cTokenArgs, deployer, overrides);
 
-    await comptroller._supportMarket(cToken.address, overrides);
+    console.log('CToken deployed at: ', cToken.address);
+    
+    var tx = await comptroller._supportMarket(cToken.address);
+    await tx.wait();
+    console.log('comptroller._supportMarket()');
 
     if (cTokenConf.type === CTokenType.CEther) {
-      await priceOracle.setDirectPrice(cToken.address, u.underlyingPrice || 0, overrides);
+      tx = await priceOracle.setDirectPrice(cToken.address, u.underlyingPrice || 0);
+      await tx.wait();
+      console.log('priceOracle.setDirectPrice()');
     } else {
-      await priceOracle.setUnderlyingPrice(cToken.address, u.underlyingPrice || 0, overrides);
+      tx = await priceOracle.setUnderlyingPrice(cToken.address, u.underlyingPrice || 0);
+      await tx.wait();
+      console.log('priceOracle.setUnderlyingPrice()');
     }
 
     if (u.collateralFactor) {
-      await comptroller._setCollateralFactor(cToken.address, u.collateralFactor, overrides);
+      tx = await comptroller._setCollateralFactor(cToken.address, u.collateralFactor);
+      await tx.wait();
+      console.log('comptroller._setCollateralFactor()');
     }
 
     cTokens.push(cToken);
@@ -188,6 +199,7 @@ async function deployInterestRateModels(
       model = await deployJumpRateModelV2(item.args as JumpRateModelV2Args, deployer, overrides);
     }
     models[item.name] = model;
+    console.log('Interest model deployed at: ', model.address);
   }
   return models;
 }
