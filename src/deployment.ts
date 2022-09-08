@@ -14,8 +14,8 @@ import {
   Comptroller,
   Comptroller__factory,
   JumpRateModelV2__factory,
-  ChainlinkPriceOracle,
-  ChainlinkPriceOracle__factory,
+  SimplePriceOracle,
+  SimplePriceOracle__factory,
   WhitePaperInterestRateModel,
   WhitePaperInterestRateModel__factory,
 } from '../typechain';
@@ -58,6 +58,7 @@ export async function deployCompoundV2(
   const cTokenLikes = await deployCTokens(
     underlying,
     interestRateModels,
+    priceOracle,
     comptroller,
     deployer,
     overrides
@@ -83,6 +84,7 @@ export async function deployCompoundV2(
 async function deployCTokens(
   config: CTokenDeployArg[],
   irm: InterestRateModels,
+  priceOracle: SimplePriceOracle,
   comptroller: Comptroller,
   deployer: SignerWithAddress,
   overrides?: Overrides
@@ -104,6 +106,12 @@ async function deployCTokens(
         : await deployCToken(cTokenArgs, deployer, overrides);
 
     await comptroller._supportMarket(cToken.address, overrides);
+
+    if (cTokenConf.type === CTokenType.CEther) {
+      await priceOracle.setDirectPrice(cToken.address, u.underlyingPrice || 0, overrides);
+    } else {
+      await priceOracle.setUnderlyingPrice(cToken.address, u.underlyingPrice || 0, overrides);
+    }
 
     if (u.collateralFactor) {
       await comptroller._setCollateralFactor(cToken.address, u.collateralFactor, overrides);
@@ -187,8 +195,8 @@ async function deployInterestRateModels(
 export async function deployPriceOracle(
   deployer: SignerWithAddress,
   overrides?: Overrides
-): Promise<ChainlinkPriceOracle> {
-  return new ChainlinkPriceOracle__factory(deployer).deploy(overrides);
+): Promise<SimplePriceOracle> {
+  return new SimplePriceOracle__factory(deployer).deploy(overrides);
 }
 
 export async function deployCEth(
