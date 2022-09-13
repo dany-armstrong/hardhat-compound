@@ -1,4 +1,4 @@
-import { deployErc20Token } from '@thenextblock/hardhat-erc20';
+import { deployErc20Token } from '@dany-armstrong/hardhat-erc20';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { ethers } from 'hardhat';
 

@@ -539,9 +539,9 @@
   dependencies:
     "antlr4ts" "^0.5.0-alpha.4"
 
-"@thenextblock/hardhat-erc20@^0.0.4":
+"@dany-armstrong/hardhat-erc20@^0.0.4":
   "integrity" "sha512-mXyZmTNbtLg3VQfU73U1CyjTCNplPPdN5duledewQEqQyModp+8LyKe+S7544c2JOTxXUNT6snC9ickSILNbKA=="
-  "resolved" "https://registry.npmjs.org/@thenextblock/hardhat-erc20/-/hardhat-erc20-0.0.4.tgz"
+  "resolved" "https://registry.npmjs.org/@dany-armstrong/hardhat-erc20/-/hardhat-erc20-0.0.4.tgz"
   "version" "0.0.4"
   dependencies:
     "@nomiclabs/hardhat-ethers" "^2.0.2"

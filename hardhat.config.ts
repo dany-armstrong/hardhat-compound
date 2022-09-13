@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import '@nomiclabs/hardhat-ethers';
-import '@thenextblock/hardhat-erc20';
+import '@dany-armstrong/hardhat-erc20';
 import '@typechain/hardhat';
 
 module.exports = {

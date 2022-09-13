@@ -1,6 +1,6 @@
 {
   "name": "@dany-armstrong/hardhat-compound",
-  "version": "1.0.3",
+  "version": "1.0.6",
   "description": "Compound deployment plugin",
   "repository": "git@github.com:dany-armstrong/hardhat-compound.git",
   "author": "dany-armstrong",
@@ -22,7 +22,9 @@
     "lint": "tslint --config tslint.json --project tsconfig.json",
     "test": "mocha --exit --recursive 'test/**/*.test.ts'",
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "postbuild": "npm run copy-files",
+    "copy-files": "copyfiles -u 1 typechain/*.d.ts dist/typechain"
   },
   "files": [
     "dist/contracts/",
@@ -42,6 +44,7 @@
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.6.1",
     "chai": "^4.3.4",
+    "copyfiles": "^2.4.1",
     "hardhat": "^2.6.0",
     "mocha": "^9.0.3",
     "prettier": "^2.3.2",
@@ -58,7 +61,7 @@
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
-    "@thenextblock/hardhat-erc20": "^0.0.4",
+    "@dany-armstrong/hardhat-erc20": "^1.0.1",
     "@typechain/ethers-v5": "^7.0.1",
     "@typechain/hardhat": "^2.2.0",
     "dotenv": "^10.0.0",

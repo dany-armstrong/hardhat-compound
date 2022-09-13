@@ -45,7 +45,7 @@ You can use this plugin in a Hardhat script to deploy.
 import { ethers } from "hardhat";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { assert } from "chai";
-import { deployErc20Token, Erc20Token } from "@thenextblock/hardhat-erc20";
+import { deployErc20Token, Erc20Token } from "@dany-armstrong/hardhat-erc20";
 import { CTokenDeployArg, deployCompoundV2, Comptroller,} from "@dany-armstrong/hardhat-compound";
 
 async function main() {
